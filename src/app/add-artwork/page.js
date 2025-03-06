@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 export default function AddArtwork() {
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
+  const [year, setYear] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [source, setSource] = useState("");
   const [licence, setLicence] = useState("");
@@ -18,6 +19,7 @@ export default function AddArtwork() {
     const newArtwork = {
       title,
       artist,
+      year,
       imageUrl,
       source,
       licence,
@@ -62,6 +64,17 @@ export default function AddArtwork() {
             type="text"
             value={artist}
             onChange={(e) => setArtist(e.target.value)}
+            className="border px-3 py-2 rounded-lg w-full"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block">Year</label>
+          <input
+            type="text"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
             className="border px-3 py-2 rounded-lg w-full"
             required
           />

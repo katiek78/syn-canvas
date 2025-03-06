@@ -84,7 +84,7 @@ export default function ArtworkGrid() {
             <div className="p-4">
               <h3 className="font-bold text-lg">{artwork.title}</h3>
               <p className="text-gray-600">
-                {artwork.artist}, {artwork.year}
+                {artwork.artist} ({artwork.year})
               </p>
               <div className="flex items-center mt-2 text-gray-500">
                 <span className="inline-flex items-center">
