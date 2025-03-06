@@ -7,10 +7,14 @@ import Image from "next/image";
 
 export default function ArtworkGrid() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [artworks, setArtworks] = useState(null);
   const [filteredArtworks, setFilteredArtworks] = useState([]);
+  const [error, setError] = useState(null);
 
   // Filter artworks based on search query
   useEffect(() => {
+    if (!artworks?.length) return;
+
     if (searchQuery) {
       const filtered = artworks.filter(
         (artwork) =>
@@ -21,10 +25,7 @@ export default function ArtworkGrid() {
     } else {
       setFilteredArtworks(artworks);
     }
-  }, [searchQuery]);
-
-  const [artworks, setArtworks] = useState(null);
-  const [error, setError] = useState(null);
+  }, [searchQuery, artworks]);
 
   useEffect(() => {
     const fetchArtwork = async () => {
@@ -57,6 +58,10 @@ export default function ArtworkGrid() {
           <Search className="absolute right-3 text-gray-400" />
         </div>
       </div>
+
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <Link href="/add-artwork">Add Artwork</Link>
+      </button>
       {/* Artwork Grid */}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
