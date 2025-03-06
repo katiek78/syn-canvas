@@ -69,7 +69,7 @@ export default function ArtworkGrid() {
           <Link
             key={artwork._id}
             href={`/artwork/${artwork._id}`}
-            className="bg-white rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform hover:scale-105"
+            className="rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform hover:scale-105"
           >
             <div className="relative h-48 w-full">
               {artwork.imageUrl && (
