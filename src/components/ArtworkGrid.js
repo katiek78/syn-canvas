@@ -78,6 +78,7 @@ export default function ArtworkGrid() {
                   alt={artwork.title}
                   fill
                   className="object-cover"
+                  unoptimized
                 />
               )}
             </div>

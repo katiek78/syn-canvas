@@ -78,6 +78,15 @@ export default function ArtworkPage() {
     fetchArtwork();
   }, [artworkId]);
 
+  const handleEdit = () => {
+    router.push(`/artwork/${artworkId}/edit`); // Navigate to the edit page
+  };
+
+  /**
+   * Deletes the artwork with the given ID from the database.
+   * Redirects to the home/gallery page if successful.
+   * Displays an alert with an error message if the deletion fails.
+   */
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this artwork?"
@@ -123,6 +132,19 @@ export default function ArtworkPage() {
         <p className="mt-2 font-semibold">Artist: {artwork.artist}</p>
         <ArtworkAttribution {...artwork} />
 
+        <button
+          onClick={handleEdit}
+          className="bg-blue-500 text-white py-2 px-4 rounded mt-4 mr-2"
+        >
+          Edit Artwork
+        </button>
+        <button
+          onClick={handleDelete}
+          className="bg-red-500 text-white py-2 px-4 rounded mt-4"
+        >
+          Delete Artwork
+        </button>
+
         {(!artwork.songs || artwork.songs.length === 0) && (
           <p className="mt-4 text-lg font-semibold text-gray-700">
             No musical pairings have been added for this artwork yet. Why not
@@ -148,7 +170,7 @@ export default function ArtworkPage() {
           {isSearchOpen && results && results.length > 0 && (
             <button
               onClick={handleCloseSearch}
-              className="bg-green-500 text-white px-4 py-2 rounded mt-2 ml-2"
+              className="bg-gray-800 text-white px-4 py-2 rounded mt-2 ml-2"
             >
               Close search
             </button>
@@ -191,13 +213,6 @@ export default function ArtworkPage() {
             ></iframe>
           </div>
         ))}
-
-        <button
-          onClick={handleDelete}
-          className="bg-red-500 text-white py-2 px-4 rounded mt-4"
-        >
-          Delete Artwork
-        </button>
       </div>
     )
   );
