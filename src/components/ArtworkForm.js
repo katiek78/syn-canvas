@@ -3,13 +3,13 @@
 import React, { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 
-export default function ArtworkForm({ initialData }) {
-  const [title, setTitle] = useState(initialData.title || "");
-  const [artist, setArtist] = useState(initialData.artist || "");
-  const [year, setYear] = useState(initialData.year || "");
-  const [imageUrl, setImageUrl] = useState(initialData.imageUrl || "");
-  const [source, setSource] = useState(initialData.source || "");
-  const [licence, setLicence] = useState(initialData.licence || "");
+export default function ArtworkForm({ initialData = {} }) {
+  const [title, setTitle] = useState(initialData?.title || "");
+  const [artist, setArtist] = useState(initialData?.artist || "");
+  const [year, setYear] = useState(initialData?.year || "");
+  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || "");
+  const [source, setSource] = useState(initialData?.source || "");
+  const [licence, setLicence] = useState(initialData?.licence || "");
   const router = useRouter();
   const params = useParams();
   const artworkId = params.id;
@@ -29,7 +29,7 @@ export default function ArtworkForm({ initialData }) {
 
     let res;
 
-    if (initialData) {
+    if (initialData.title) {
       //update
       try {
         res = await fetch(`/api/artworks/${artworkId}`, {
@@ -71,7 +71,7 @@ export default function ArtworkForm({ initialData }) {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-4xl mb-4">
-        {initialData ? "Edit Artwork" : "Add Artwork"}
+        {initialData.title ? "Edit Artwork" : "Add Artwork"}
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
