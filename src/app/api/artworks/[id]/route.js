@@ -2,7 +2,7 @@ import clientPromise from "../../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export async function GET(req, { params }) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     // Connect to the database
@@ -64,10 +64,10 @@ export async function DELETE(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { spotifyId } = await req.json(); // Get the Spotify ID from the request body
+  const updatedFields = await req.json(); // Get the updated fields from the request body
 
-  if (!spotifyId) {
-    return new Response(JSON.stringify({ error: "Missing Spotify ID" }), {
+  if (!updatedFields || Object.keys(updatedFields).length === 0) {
+    return new Response(JSON.stringify({ error: "No data provided" }), {
       status: 400,
     });
   }
@@ -76,14 +76,13 @@ export async function PUT(req, { params }) {
     const client = await clientPromise;
     const db = client.db("artworksDB");
 
-    const result = await db.collection("artworks").updateOne(
-      { _id: new ObjectId(id) },
-      { $addToSet: { songs: spotifyId } } // Ensure no duplicate song entries
-    );
+    const result = await db
+      .collection("artworks")
+      .updateOne({ _id: new ObjectId(id) }, { $set: updatedFields });
 
     if (result.modifiedCount === 1) {
       return new Response(
-        JSON.stringify({ message: "Song added successfully" }),
+        JSON.stringify({ message: "Artwork updated successfully" }),
         { status: 200 }
       );
     } else {
@@ -92,7 +91,7 @@ export async function PUT(req, { params }) {
       });
     }
   } catch (error) {
-    console.error("Error adding song:", error);
+    console.error("Error updating artwork:", error);
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
     });

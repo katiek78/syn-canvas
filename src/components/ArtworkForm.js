@@ -1,22 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
-export default function ArtworkForm() {
-  const [title, setTitle] = useState("");
-  const [artist, setArtist] = useState("");
-  const [year, setYear] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [source, setSource] = useState("");
-  const [licence, setLicence] = useState("");
+export default function ArtworkForm({ initialData }) {
+  const [title, setTitle] = useState(initialData.title || "");
+  const [artist, setArtist] = useState(initialData.artist || "");
+  const [year, setYear] = useState(initialData.year || "");
+  const [imageUrl, setImageUrl] = useState(initialData.imageUrl || "");
+  const [source, setSource] = useState(initialData.source || "");
+  const [licence, setLicence] = useState(initialData.licence || "");
   const router = useRouter();
+  const params = useParams();
+  const artworkId = params.id;
 
   // Handler for form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newArtwork = {
+    const currentArtwork = {
       title,
       artist,
       year,
@@ -25,26 +27,52 @@ export default function ArtworkForm() {
       licence,
     };
 
-    // Call your API to add the artwork to MongoDB
-    const res = await fetch("/api/artworks", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newArtwork),
-    });
+    let res;
 
+    if (initialData) {
+      //update
+      try {
+        res = await fetch(`/api/artworks/${artworkId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(currentArtwork),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to update artwork");
+        }
+
+        console.log("Artwork updated successfully");
+      } catch (error) {
+        console.error("Error updating artwork:", error);
+      }
+    } else {
+      //add
+      res = await fetch("/api/artworks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(currentArtwork),
+      });
+    }
     if (res.ok) {
       // Redirect back to the gallery page after successful addition
       router.push("/");
     } else {
-      console.error("Failed to add artwork");
+      console.error("Failed to save changes");
     }
   };
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-4xl mb-4">Add Artwork</h1>
+      <h1 className="text-4xl mb-4">
+        {initialData ? "Edit Artwork" : "Add Artwork"}
+      </h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -115,7 +143,7 @@ export default function ArtworkForm() {
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded-lg"
         >
-          Add Artwork
+          {initialData ? "Save" : "Add"}
         </button>
       </form>
     </div>
