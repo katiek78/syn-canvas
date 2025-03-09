@@ -2,8 +2,10 @@
 
 import React, { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function ArtworkForm({ initialData = {} }) {
+  const { user, isLoading } = useUser();
   const [title, setTitle] = useState(initialData?.title || "");
   const [artist, setArtist] = useState(initialData?.artist || "");
   const [year, setYear] = useState(initialData?.year || "");

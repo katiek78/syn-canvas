@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import ArtworkForm from "@/components/ArtworkForm";
+import { useRequireAdmin } from "@/utils/requireLogin";
 
 export default function EditArtworkPage() {
   const params = useParams();
   const artworkId = params.id;
-
   const [artworkData, setArtworkData] = useState(null);
+  const { isLoading, isAdmin } = useRequireAdmin();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!isAdmin) return <div>Access Denied</div>;
 
   useEffect(() => {
     if (artworkId) {

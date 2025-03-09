@@ -4,12 +4,14 @@ import React, { useState, useEffect } from "react";
 import { Search, Music } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function ArtworkGrid() {
   const [searchQuery, setSearchQuery] = useState("");
   const [artworks, setArtworks] = useState(null);
   const [filteredArtworks, setFilteredArtworks] = useState([]);
   const [error, setError] = useState(null);
+  const { user, isLoading } = useUser();
 
   // Filter artworks based on search query
   useEffect(() => {
@@ -59,9 +61,11 @@ export default function ArtworkGrid() {
         </div>
       </div>
 
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        <Link href="/add-artwork">Add Artwork</Link>
-      </button>
+      {user && (
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <Link href="/add-artwork">Add Artwork</Link>
+        </button>
+      )}
       {/* Artwork Grid */}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">

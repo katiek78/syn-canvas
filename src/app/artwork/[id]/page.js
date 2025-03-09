@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import ArtworkAttribution from "@/components/ArtworkAttribution";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function ArtworkPage() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function ArtworkPage() {
   const [loading, setLoading] = useState(true);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const { user, isLoading } = useUser();
 
   const artworkId = params.id;
 
@@ -132,18 +134,22 @@ export default function ArtworkPage() {
         <p className="mt-2 font-semibold">Artist: {artwork.artist}</p>
         <ArtworkAttribution {...artwork} />
 
-        <button
-          onClick={handleEdit}
-          className="bg-blue-500 text-white py-2 px-4 rounded mt-4 mr-2"
-        >
-          Edit Artwork
-        </button>
-        <button
-          onClick={handleDelete}
-          className="bg-red-500 text-white py-2 px-4 rounded mt-4"
-        >
-          Delete Artwork
-        </button>
+        {user && (
+          <>
+            <button
+              onClick={handleEdit}
+              className="bg-blue-500 text-white py-2 px-4 rounded mt-4 mr-2"
+            >
+              Edit Artwork
+            </button>
+            <button
+              onClick={handleDelete}
+              className="bg-red-500 text-white py-2 px-4 rounded mt-4"
+            >
+              Delete Artwork
+            </button>
+          </>
+        )}
 
         {(!artwork.songs || artwork.songs.length === 0) && (
           <p className="mt-4 text-lg font-semibold text-gray-700">
