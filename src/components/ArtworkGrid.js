@@ -83,6 +83,8 @@ export default function ArtworkGrid() {
                   fill
                   className="object-cover"
                   unoptimized
+                  quality={50} // Optional: Reduce the quality for faster loading
+                  loading="lazy"
                 />
               )}
             </div>
