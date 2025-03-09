@@ -53,6 +53,30 @@ export default function ArtworkPage() {
     }
   };
 
+  const handleDeleteSong = async (song) => {
+    try {
+      const res = await fetch(`/api/artworks/${artworkId}/songs`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ spotifyId: song }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete song");
+      }
+
+      console.log("Song deleted successfully");
+      setArtwork({
+        ...artwork,
+        songs: (artwork.songs || []).filter((id) => id !== song),
+      });
+    } catch (error) {
+      console.error("Error deleting song:", error);
+    }
+  };
+
   const handleCloseSearch = () => {
     setIsSearchOpen(false);
   };
@@ -209,14 +233,24 @@ export default function ArtworkPage() {
         </div>
 
         {artwork.songs?.map((song, i) => (
-          <div key={i}>
+          <div key={i} className="flex items-center gap-2 mt-4">
             <iframe
               src={`https://open.spotify.com/embed/track/${song}?utm_source=generator`}
               width="100%"
               height="80"
               allow="autoplay; encrypted-media"
-              className="mt-4 rounded-lg"
+              className="rounded-lg"
             ></iframe>
+
+            {/* Show delete button only if admin */}
+            {user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && (
+              <button
+                onClick={() => handleDeleteSong(song)}
+                className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition"
+              >
+                ✖
+              </button>
+            )}
           </div>
         ))}
       </div>
