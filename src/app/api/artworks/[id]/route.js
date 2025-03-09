@@ -66,6 +66,9 @@ export async function DELETE(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
+  const user = await requireAdminInEndpoint(req);
+  if (!user) return;
+
   const { id } = params;
   const updatedFields = await req.json(); // Get the updated fields from the request body
 
@@ -88,6 +91,10 @@ export async function PUT(req, { params }) {
         JSON.stringify({ message: "Artwork updated successfully" }),
         { status: 200 }
       );
+    } else if (result.matchedCount === 1) {
+      return new Response(JSON.stringify({ message: "No changes made" }), {
+        status: 200,
+      });
     } else {
       return new Response(JSON.stringify({ error: "Artwork not found" }), {
         status: 404,

@@ -12,6 +12,10 @@ export default function ArtworkForm({ initialData = {} }) {
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || "");
   const [source, setSource] = useState(initialData?.source || "");
   const [licence, setLicence] = useState(initialData?.licence || "");
+  const [licenceUrl, setLicenceUrl] = useState(initialData?.licenceUrl || "");
+  const [licenceNote, setLicenceNote] = useState(
+    initialData?.licenceNote || ""
+  );
   const router = useRouter();
   const params = useParams();
   const artworkId = params.id;
@@ -27,6 +31,8 @@ export default function ArtworkForm({ initialData = {} }) {
       imageUrl,
       source,
       licence,
+      licenceUrl,
+      licenceNote,
     };
 
     let res;
@@ -64,7 +70,9 @@ export default function ArtworkForm({ initialData = {} }) {
     }
     if (res.ok) {
       // Redirect back to the gallery page after successful addition
-      router.push("/");
+      if (!initialData.title) {
+        router.push("/");
+      } else router.push(`/artwork/${artworkId}`);
     } else {
       console.error("Failed to save changes");
     }
@@ -137,6 +145,26 @@ export default function ArtworkForm({ initialData = {} }) {
             type="text"
             value={licence}
             onChange={(e) => setLicence(e.target.value)}
+            className="border px-3 py-2 rounded-lg w-full"
+          />
+        </div>
+
+        <div>
+          <label className="block">Licence URL</label>
+          <input
+            type="text"
+            value={licenceUrl}
+            onChange={(e) => setLicenceUrl(e.target.value)}
+            className="border px-3 py-2 rounded-lg w-full"
+          />
+        </div>
+
+        <div>
+          <label className="block">Licence note</label>
+          <input
+            type="text"
+            value={licenceNote}
+            onChange={(e) => setLicenceNote(e.target.value)}
             className="border px-3 py-2 rounded-lg w-full"
           />
         </div>
