@@ -1,5 +1,6 @@
 import clientPromise from "../../../../lib/mongodb";
 import { ObjectId } from "mongodb";
+import { requireAdminInEndpoint } from "@/utils/auth";
 
 export async function GET(req, { params }) {
   const { id } = await params;
@@ -34,6 +35,8 @@ export async function GET(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
+  const user = await requireAdminInEndpoint(req);
+  if (!user) return;
   const { id } = params; // Get the artwork ID from the URL parameters
 
   try {
@@ -96,4 +99,14 @@ export async function PUT(req, { params }) {
       status: 500,
     });
   }
+}
+
+// Fallback for unsupported methods
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204, // No content, but allows preflight requests
+    headers: {
+      Allow: "PUT, GET, DELETE, OPTIONS",
+    },
+  });
 }

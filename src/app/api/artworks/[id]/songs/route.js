@@ -1,5 +1,6 @@
 import clientPromise from "../../../../../lib/mongodb";
 import { ObjectId } from "mongodb";
+import { requireAdminInEndpoint } from "@/utils/auth";
 
 // Add a song to an artwork
 export async function PUT(req, { params }) {
@@ -42,6 +43,9 @@ export async function PUT(req, { params }) {
 
 // Remove a song from an artwork
 export async function DELETE(req, { params }) {
+  const user = await requireAdminInEndpoint(req);
+  if (!user) return;
+
   const { id } = params;
   const { spotifyId } = await req.json(); // Get the Spotify ID from the request body
 
@@ -76,4 +80,14 @@ export async function DELETE(req, { params }) {
       status: 500,
     });
   }
+}
+
+// Fallback for unsupported methods
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204, // No content, but allows preflight requests
+    headers: {
+      Allow: "PUT, DELETE, OPTIONS",
+    },
+  });
 }

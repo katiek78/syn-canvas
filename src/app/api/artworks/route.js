@@ -1,4 +1,5 @@
 import clientPromise from "../../../lib/mongodb";
+import { requireAdminInEndpoint } from "@/utils/auth";
 
 export async function GET() {
   try {
@@ -15,6 +16,8 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  const user = await requireAdminInEndpoint(request);
+  if (!user) return;
   try {
     const data = await request.json();
     const client = await clientPromise;
@@ -32,4 +35,14 @@ export async function POST(request) {
     console.log(error);
     return new Response("Failed to save artwork", { status: 500 });
   }
+}
+
+// Fallback for unsupported methods
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204, // No content, but allows preflight requests
+    headers: {
+      Allow: "POST, GET, OPTIONS",
+    },
+  });
 }
